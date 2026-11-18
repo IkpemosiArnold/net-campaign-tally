@@ -1,6 +1,6 @@
 # Net Tally Check
 
-An end-of-day check for a bed net (ITN) distribution day. At close, each distribution point (DP) has four records of the same nets: the waybills that brought stock in, the issue records on the DP phone, the paper tally sheet, and the household registration from mobilisation. This page sets them against each other and says which points add up, how many nets cannot be traced, and which records someone should look at before the daily update goes out. Every figure points at the file, row and cell it came from.
+An end-of-day check for a bed net (ITN) distribution day, in a fixed-point distribution with net cards (two-phase: households registered at mobilisation, then redeem their card at a distribution point). At close, each distribution point (DP) has four records of the same nets: the waybills that brought stock in, the issue records on the DP phone, the paper tally sheet, and the household registration from mobilisation. This page sets them against each other and says which points add up, how many nets cannot be traced, and which records someone should look at before the daily update goes out. Every figure points at the file, row and cell it came from.
 
 It is plain code. There is no model in it. The wards, points, vouchers, phones, coordinates and figures are all made up.
 
@@ -38,7 +38,7 @@ The rule is editable on the page ("Change the rule"): people per net, and the mo
 
 Where that comes from:
 - WHO's recommendation on universal coverage (March 2014, rev. 1) says that for mass campaigns "one LLIN should be distributed for every two persons at risk of malaria", and that for procurement an overall ratio of 1 net for every 1.8 people should be used, because many households have an odd number of members. Source: WHO Global Malaria Programme, *Achieving universal coverage with long-lasting insecticidal nets in malaria control*, WHO/HTM/GMP/2013.rev.2014, https://www.afro.who.int/sites/default/files/2017-06/who_recommendations_universal_coverage_llins.pdf (read 18 Nov 2026).
-- The cap of 4 a household is reported for Nigerian state campaigns, for example Malaria Consortium's account of the 2022 Anambra campaign (one net for every two people, up to four a household) and its earlier technical brief on Nigeria's LLIN campaigns. Search results, 18 Nov 2026: https://www.malariaconsortium.org/resources/implementation-of-a-mass-insecticide-treated-net-campaign-using-information-and-communication-technology-for-development-through-a-single-phase-distribution-approach-in-anambra-state-nigeria and https://www.malariaconsortium.org/media-download-file/201604260428/techincalbrief_nigeria_llins.pdf. These two pages could not be opened directly when this was built, so treat the cap as a common practice, not a fixed national rule. The Alliance for Malaria Prevention toolkits cover campaign planning; their allocation figure was not found in the pages that could be read.
+- The cap of 4 a household is reported for Nigerian state campaigns, for example Malaria Consortium's account of the 2022 Anambra campaign (one net for every two people, up to four a household) and its earlier technical brief on Nigeria's LLIN campaigns. Search results, 18 Nov 2026: https://www.malariaconsortium.org/resources/implementation-of-a-mass-insecticide-treated-net-campaign-using-information-and-communication-technology-for-development-through-a-single-phase-distribution-approach-in-anambra-state-nigeria and https://www.malariaconsortium.org/media-download-file/201604260428/techincalbrief_nigeria_llins.pdf. A Malaria Journal paper (Oct 2025, "Delivering an insecticide-treated net campaign in a complex operating environment: lessons from Anambra state") is reported in search summaries to state the same rule; that campaign was single-phase (as the Malaria Consortium page title says), not two-phase with net cards like this sample. None of these pages could be opened directly (they returned errors on 18 and 19 Nov 2026), so treat the cap as a common practice, not a fixed national rule. The Alliance for Malaria Prevention toolkits cover campaign planning; their allocation figure was not found in the pages that could be read.
 
 Each campaign sets its own rule in its guidelines. Use that one.
 
@@ -58,6 +58,7 @@ The sentence check knows a fixed set of claims: points, nets issued, returned, o
 
 - Column names are fixed. A real export (ODK, CommCare, DHIS2 or a vendor app) would need a small mapping step first.
 - One day at a time. Opening stock carried from the day before is not read; add it as a waybill row if needed.
+- Coordinates are on a made-up grid, so distances are approximate (within about 1%).
 - The duplicate check uses phone and distance only. It misses duplicates registered on different phones and flags related households that share a phone.
 - Times are read as written. Device clock drift is not corrected.
 - Phones are masked in the sample, as many exports are. A shared masked number could in real data be two different numbers.
@@ -72,7 +73,7 @@ Everything is made up. Names were web-searched on 18 Nov 2026 for an exact real 
 - "Ugbenna" (ward): no page for the exact name. Nearest results were Ugbenu (Anambra) and the given names Ugonna and Uchenna.
 - The DP names are those two ward names with "Town Hall", "Primary School", "Health Post" and "Market Square". No state, LGA or person is named.
 
-Vouchers (NC-4xxxxx), household ids, devices (TAB-01 to TAB-06), teams (MT-11 to MT-16) and waybill numbers are invented. Phones are masked random numbers. Coordinates are random points and do not mark any home.
+Vouchers (NC-4xxxxx), household ids, devices (TAB-01 to TAB-06), teams (MT-11 to MT-16) and waybill numbers are invented. Phones are masked random numbers. Coordinates are points on a made-up local grid, not places on a map.
 
 ## Run the tests
 

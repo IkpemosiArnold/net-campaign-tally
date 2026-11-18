@@ -161,7 +161,11 @@ function checkDp(dp, t) {
     if (!mathOk) why.push(`On the sheet, ${fmt(received)} − ${fmt(issued)} − ${fmt(returned)} = ${fmt(sheetMath)}, but the balance says ${fmt(balance)}.`);
     const lead = out.untraced == null ? "Stock in is not found." : out.untraced > 0 ? `${plural(out.untraced, "net", "nets")} not traced.` : out.untraced < 0 ? `${plural(-out.untraced, "net", "nets")} more accounted for than came in.` : "The nets balance, but the papers disagree.";
     out.line = `${lead} ${why[0]}`;
-    const tail = out.untraced > 0 ? " The check cannot say where they went: to households with no phone record, lost in transit, or a slip on paper. Someone at the point has to say." : "";
+    const tail = out.untraced > 0
+      ? (!issuedOk && stockOk ? " Stock in matches the waybill, so the gap is on the issue side: nets handed out with no phone record (a phone offline, or issued on paper only), or nets missing from the point. Someone at the point has to say."
+        : !stockOk && issuedOk ? " Issues match the phone records, so the gap is between the ward store and the point: short delivery, a waybill written for more than was loaded, or a count slip on arrival. Someone has to check with the store and the driver."
+        : " The check cannot say where they went. Someone at the point has to say.")
+      : "";
     out.reason = `${why.join(" ")}${tail}`;
   }
 
@@ -396,6 +400,8 @@ export function checkUpdate(sentences, day) {
     const refs = [];
     const notes = [];
     let bad = false;
+    let short = null;
+    const andList = (xs) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
     for (const c of cs) {
       let ok = false;
       if (c.metric === "dps") {
@@ -430,12 +436,25 @@ export function checkUpdate(sentences, day) {
         notes.push(ok ? "No record gives more than the rule." : `${plural(day.groups.overRule.length, "record gives", "records give")} more than the rule.`);
         for (const f of day.groups.overRule) refs.push(...f.facts[0].refs.filter((r) => r && r.tone === "fail"));
       }
-      if (!ok) bad = true;
+      if (!ok) {
+        bad = true;
+        if (!short) {
+          short = {
+            dps: `The files hold ${fmt(dps.length)} points.`,
+            issued: `Phone records add to ${fmt(totals.records)}.`,
+            returned: `The tally sheets show ${fmt(totals.returned)} returned.`,
+            balance: `Closing balances add to ${fmt(totals.balance)}.`,
+            allReconciled: `${andList(dps.filter((d) => d.tone !== "pass").map((d) => d.dp))} do${dps.filter((d) => d.tone !== "pass").length === 1 ? "es" : ""} not add up.`,
+            noTwice: `${andList(day.groups.twice.map((f) => f.title.split(",")[0].replace("Voucher ", "")))} ${day.groups.twice.length === 1 ? "was" : "were"}.`,
+            allInRule: `${plural(day.groups.overRule.length, "record gives", "records give")} more.`,
+          }[c.metric];
+        }
+      }
       marks.push({ start: c.start, end: c.end, tone: ok ? "pass" : "fail" });
     }
     if (!cs.length) {
-      return { text, tone: "none", word: "Not checked", marks: [], refs: [], reason: /\d/.test(text) ? "This figure is not one the files hold. Left for a person." : "No figure the files hold. Left for a person." };
+      return { text, tone: "none", word: "Not checked", marks: [], refs: [], short: null, reason: /\d/.test(text) ? "This figure is not one the files hold. Left for a person." : "No figure the files hold. Left for a person." };
     }
-    return { text, tone: bad ? "fail" : "pass", word: bad ? "Blocked" : "Can go", marks, refs: refs.filter(Boolean), reason: notes.join(" ") };
+    return { text, tone: bad ? "fail" : "pass", word: bad ? "Blocked" : "Can go", marks, refs: refs.filter(Boolean), reason: notes.join(" "), short };
   });
 }

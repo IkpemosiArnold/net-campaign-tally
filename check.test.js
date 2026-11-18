@@ -63,7 +63,8 @@ test("DP-03: the tally says 111 issued, phone records 89, so 22 not traced", () 
   assert.equal(fact(d, "Phone issue records").value, "89");
   assert.equal(fact(d, "Phone issue records").refs.length, 34);
   assert.equal(d.untraced, 22);
-  assert.match(d.reason, /cannot say where they went/);
+  assert.match(d.reason, /gap is on the issue side/);
+  assert.doesNotMatch(d.reason, /transit/);
 });
 
 test("DP-05: two waybills, 150 + 100 = 250, and the tally received 235", () => {
@@ -73,6 +74,8 @@ test("DP-05: two waybills, 150 + 100 = 250, and the tally received 235", () => {
   assert.equal(f.value, "250");
   assert.equal(fact(d, "Tally sheet, received").value, "235");
   assert.equal(d.untraced, 15);
+  assert.match(d.reason, /between the ward store and the point/);
+  assert.doesNotMatch(d.reason, /no phone record/);
   assert.equal(fact(d, "Tally sheet, on hand").note, "235 − 152 − 0 = 83, as written.");
 });
 
@@ -124,8 +127,8 @@ test("one phone, two registrations 15 m apart is a likely duplicate, a different
   const f = day.groups.duplicate[0];
   assert.match(f.line, /^15 m apart, registered 7 minutes apart, both 6 people\. Both redeemed: 6 nets\.$/);
   assert.equal(f.extra, 3);
-  assert.equal(Math.round(metres({ lat: 7.41532, lon: 5.08417 }, { lat: 7.41544, lon: 5.08424 })), 15);
-  const moved = { ...files, "registration.csv": files["registration.csv"].replace("7.41544,5.08424", "7.42544,5.08424") };
+  assert.equal(Math.round(metres({ lat: 0.01532, lon: 0.00417 }, { lat: 0.01544, lon: 0.00424 })), 15);
+  const moved = { ...files, "registration.csv": files["registration.csv"].replace("0.01544,0.00424", "0.02544,0.00424") };
   assert.equal(checkDay(moved).groups.duplicate.length, 0);
 });
 
@@ -138,6 +141,7 @@ test("the supervisor update: 2 of 6 sentences can go, 3 blocked, 1 not checked",
   assert.equal(u[2].refs.length, 2);
   assert.equal(new Set(u[4].refs.map((r) => r.line)).size, 6);
   assert.deepEqual(u[4].refs.filter((r) => r.tone === "pass").map(cellAt).filter((c) => /^\d+$/.test(c)), ["48", "24", "39", "34", "83", "50"]);
+  assert.deepEqual(u.map((x) => x.short), ["Phone records add to 675.", "DP-03 and DP-05 do not add up.", "NC-422522 was.", null, null, null]);
   assert.deepEqual(u[5].marks, []);
 });
 

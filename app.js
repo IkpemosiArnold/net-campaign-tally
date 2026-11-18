@@ -1,5 +1,5 @@
-import { checkDay, checkUpdate, ruleText, DEFAULT_RULE, fmt } from "./check.js?v=1";
-import { day, files, update } from "./samples.js?v=1";
+import { checkDay, checkUpdate, ruleText, DEFAULT_RULE, fmt } from "./check.js?v=ntc-1119";
+import { day, files, update } from "./samples.js?v=ntc-1119";
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => {
@@ -329,8 +329,9 @@ function renderUpdate(fresh) {
     btn.setAttribute("aria-controls", `upd-ev-${i}`);
     const body = el("span", "body");
     const quote = el("span", "quote");
-    quote.append(open ? marked(s.text, s.marks) : s.text);
+    quote.append(open || s.tone === "fail" ? marked(s.text, s.marks) : s.text);
     body.append(status(s.tone, s.word), quote);
+    if (s.tone === "fail" && s.short) body.append(el("span", "why-line st-fail", s.short));
     btn.append(body, icon("chev", "chev"));
     btn.addEventListener("click", () => { updateOpen = open ? null : i; renderUpdate(false); });
     item.append(btn);
@@ -343,6 +344,8 @@ function renderUpdate(fresh) {
       const src = sourceOf(s.refs, { fold: s.refs.length > 6 });
       if (src) ev.append(src);
       item.append(ev);
+    }
+    if (open || s.tone === "fail") {
       draw(item);
     }
     rows.append(item);
