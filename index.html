@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Net Tally Check</title>
+<meta name="description" content="An end-of-day check for a bed net distribution day. Waybills, phone issue records, tally sheets and household registration set against each other by plain code. Every figure points at its row.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfcfc">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f11">
+<link rel="icon" href="data:,">
+<link rel="preload" href="fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cross" viewBox="0 0 16 16"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/></symbol>
+  <symbol id="i-none" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2.2 2.2"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 16 16"><path d="M8 3.5v6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><circle cx="8" cy="12.25" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 16 16"><path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+<main class="shell">
+  <div class="sheet-col">
+    <header class="top">
+      <p class="mark">Net Tally Check <span class="tag">Sample data</span></p>
+      <h1>Do today's phone records, tally sheets and waybills add up?</h1>
+      <p class="sub">Day 2 of a made-up bed net distribution: two wards, six points, 17 Nov 2026. Plain code, no model.</p>
+    </header>
+
+    <section class="reading" aria-labelledby="summary">
+      <p class="summary" id="summary" role="status"><span class="sum-main">Reading</span></p>
+      <button type="button" class="btn text why-btn" id="why-btn" aria-expanded="false" aria-controls="why">How the day is read</button>
+      <div class="why-text" id="why" hidden></div>
+
+      <h2 class="group-h" id="dp-h">Distribution points</h2>
+      <div id="dps"></div>
+
+      <h2 class="group-h" id="rec-h">Records to check</h2>
+      <div class="rule">
+        <p class="rule-line" id="rule-line"></p>
+        <button type="button" class="btn text small" id="rule-btn" aria-expanded="false" aria-controls="rule-form">Change the rule</button>
+        <div class="rule-form" id="rule-form" hidden>
+          <div class="pick">
+            <label for="rule-per">People per net</label>
+            <select id="rule-per"><option value="1">1</option><option value="2" selected>2</option><option value="3">3</option></select>
+          </div>
+          <div class="pick">
+            <label for="rule-cap">Most nets a household</label>
+            <select id="rule-cap"><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="">No cap</option></select>
+          </div>
+          <p class="held-note">Use your campaign's own guideline. Every record is read again when you change it.</p>
+        </div>
+      </div>
+      <div id="recs"></div>
+    </section>
+  </div>
+
+  <aside class="evidence-col" id="side" aria-live="polite"></aside>
+
+  <section class="tool" id="update-tool" aria-labelledby="update-h">
+    <h2 id="update-h">The supervisor's update, checked before it goes</h2>
+    <p class="tool-sub">Drafted from the tally sheets at close. Plain code reads each sentence against the files.</p>
+    <blockquote class="draft" id="draft"></blockquote>
+    <div class="actions">
+      <button type="button" id="update-check" class="btn primary">Check it against the files</button>
+    </div>
+    <p class="summary small" id="update-summary" role="status" hidden></p>
+    <div id="update-out"></div>
+  </section>
+
+  <section class="tool" id="src-tool" aria-labelledby="src-h">
+    <h2 id="src-h">The files</h2>
+    <p class="tool-sub">Every file the check read, as numbered rows. A row number here is the row number in a spreadsheet.</p>
+    <div class="pick">
+      <label for="src-pick">File</label>
+      <select id="src-pick"></select>
+    </div>
+    <div id="src-out"></div>
+  </section>
+
+  <footer class="foot" id="foot">
+    <p>For campaign data teams who close each distribution day with a reconciliation. Built by Arnold Ikpemosi Adeyemi. Made-up wards, points, vouchers and figures.</p>
+    <p><a href="https://ikpemosi.work">ikpemosi.work</a></p>
+  </footer>
+</main>
+<script type="module" src="app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "net-campaign-tally",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "End-of-day accountability check for a bed net distribution day: waybills, phone issue records, tally sheets and registration set against each other by plain code. Every figure points at its row.",
+  "scripts": { "test": "node --test" },
+  "license": "MIT"
+}
